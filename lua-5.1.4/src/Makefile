@@ -20,7 +20,7 @@ MYLIBS=
 
 # == END OF USER SETTINGS. NO NEED TO CHANGE ANYTHING BELOW THIS LINE =========
 
-PLATS= aix ansi bsd freebsd generic linux macosx mingw posix solaris
+PLATS= aix ansi bsd freebsd generic linux linux_so macosx mingw posix solaris
 
 LUA_A=	liblua.a
 CORE_O=	lapi.o lcode.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o lmem.o \
@@ -31,6 +31,7 @@ LIB_O=	lauxlib.o lbaselib.o ldblib.o liolib.o lmathlib.o loslib.o ltablib.o \
 
 LUA_T=	lua
 LUA_O=	lua.o
+LUA_SO =  liblua.so 
 
 LUAC_T=	luac
 LUAC_O=	luac.o print.o
@@ -38,6 +39,7 @@ LUAC_O=	luac.o print.o
 ALL_O= $(CORE_O) $(LIB_O) $(LUA_O) $(LUAC_O)
 ALL_T= $(LUA_A) $(LUA_T) $(LUAC_T)
 ALL_A= $(LUA_A)
+ALL_SO= $(LUA_SO)
 
 default: $(PLAT)
 
@@ -47,9 +49,18 @@ o:	$(ALL_O)
 
 a:	$(ALL_A)
 
+so:	$(ALL_SO)
+	mv $(ALL_SO) ../../build/
+
 $(LUA_A): $(CORE_O) $(LIB_O)
 	$(AR) $@ $?
 	$(RANLIB) $@
+
+$(LUA_SO): $(CORE_O) $(LIB_O)
+	$(CC) -o $@ -shared $? -ldl -lm 
+
+# $(LUA_SO): $(LUA_O) $(LUA_A)
+# 	$(CC) -o $@ $(LUA_O) $(LUA_A) -lm -shared 
 
 $(LUA_T): $(LUA_O) $(LUA_A)
 	$(CC) -o $@ $(MYLDFLAGS) $(LUA_O) $(LUA_A) $(LIBS)
@@ -58,7 +69,7 @@ $(LUAC_T): $(LUAC_O) $(LUA_A)
 	$(CC) -o $@ $(MYLDFLAGS) $(LUAC_O) $(LUA_A) $(LIBS)
 
 clean:
-	$(RM) $(ALL_T) $(ALL_O)
+	$(RM) $(ALL_T) $(ALL_SO) $(ALL_O)
 
 depend:
 	@$(CC) $(CFLAGS) -MM l*.c print.c
@@ -98,6 +109,9 @@ generic:
 linux:
 	$(MAKE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses"
 
+linux_so:
+	$(MAKE) so MYCFLAGS="-DLUA_USE_LINUX -fPIC" MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses"
+
 macosx:
 	$(MAKE) all MYCFLAGS=-DLUA_USE_LINUX MYLIBS="-lreadline"
 # use this on Mac OS X 10.3-
@@ -116,7 +130,7 @@ solaris:
 	$(MAKE) all MYCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-ldl"
 
 # list targets that do not create files (but not all makes understand .PHONY)
-.PHONY: all $(PLATS) default o a clean depend echo none
+.PHONY: all $(PLATS) default o a so clean depend echo none
 
 # DO NOT DELETE
 

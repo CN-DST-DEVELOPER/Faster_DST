@@ -1,0 +1,2 @@
+set LD_PRELOAD=/root/DontStarveLuaJIT/src/DontStarveInjectorLinux/libpreload.so
+/usr/steamapps/dst/dedicated_server/bin64/dontstarve_dedicated_server_nullrenderer_x64 -persistent_storage_root "/usr/steamapps/dst" -conf_dir "saves" -ugc_directory "/usr/steamapps/workshop" -shard Master

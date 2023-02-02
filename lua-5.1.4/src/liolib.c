@@ -504,7 +504,7 @@ static const luaL_Reg flib[] = {
 };
 
 
-static void createmeta (lua_State *L) {
+__forceinline void createmeta (lua_State *L) {
   luaL_newmetatable(L, LUA_FILEHANDLE);  /* create metatable for file handles */
   lua_pushvalue(L, -1);  /* push metatable */
   lua_setfield(L, -2, "__index");  /* metatable.__index = metatable */
@@ -512,7 +512,7 @@ static void createmeta (lua_State *L) {
 }
 
 
-static void createstdfile (lua_State *L, FILE *f, int k, const char *fname) {
+__forceinline void createstdfile (lua_State *L, FILE *f, int k, const char *fname) {
   *newfile(L) = f;
   if (k > 0) {
     lua_pushvalue(L, -1);

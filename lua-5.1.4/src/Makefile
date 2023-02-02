@@ -8,7 +8,7 @@
 PLAT= none
 
 CC= gcc
-CFLAGS= -O2 -Wall $(MYCFLAGS)
+CFLAGS= -O2 -Wall $(MYCFLAGS) -DDST -std=c99
 AR= ar rcu
 RANLIB= ranlib
 RM= rm -f
@@ -50,14 +50,13 @@ o:	$(ALL_O)
 a:	$(ALL_A)
 
 so:	$(ALL_SO)
-	mv $(ALL_SO) ../../build/
 
 $(LUA_A): $(CORE_O) $(LIB_O)
 	$(AR) $@ $?
 	$(RANLIB) $@
 
 $(LUA_SO): $(CORE_O) $(LIB_O)
-	$(CC) -o $@ -shared $? -ldl -lm 
+	$(CC) -o $@ -shared $? -ldl -lm
 
 # $(LUA_SO): $(LUA_O) $(LUA_A)
 # 	$(CC) -o $@ $(LUA_O) $(LUA_A) -lm -shared 

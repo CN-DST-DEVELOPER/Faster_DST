@@ -69,6 +69,12 @@ static void tag_error (lua_State *L, int narg, int tag) {
   luaL_typerror(L, narg, lua_typename(L, tag));
 }
 
+#ifdef __GNUC__
+LUALIB_API void internal_error (lua_State *L, int n, int tag) {
+  luaL_typerror(L, n, lua_typename(L, tag));
+}
+
+#endif
 
 LUALIB_API void luaL_where (lua_State *L, int level) {
   lua_Debug ar;
@@ -239,7 +245,7 @@ static int libsize (const luaL_Reg *l) {
 }
 
 
-LUALIB_API void luaI_openlib (lua_State *L, const char *libname,
+LUAI_FUNC void luaI_openlib (lua_State *L, const char *libname,
                               const luaL_Reg *l, int nup) {
   if (libname) {
     int size = libsize(l);
@@ -605,15 +611,24 @@ static const char *getS (lua_State *L, void *ud, size_t *size) {
   return ls->s;
 }
 
-
 LUALIB_API int luaL_loadbuffer (lua_State *L, const char *buff, size_t size,
-                                const char *name) {
-  LoadS ls;
-  ls.s = buff;
-  ls.size = size;
-  return lua_load(L, getS, &ls, name);
-}
+                                const char *name) {                                  
+  // LoadS ls;
+  // ls.s = buff;
+  // ls.size = size;
+  // return lua_load(L, getS, &ls, name);
 
+  // 使用内联volatile汇编保证函数二进制指令顺序与饥荒程序一致
+  __asm__ __volatile__(
+      "sub     $0x18,%rsp                 \n\t"
+      "mov     %rsi,(%rsp)                \n\t"
+      "mov     %rdx,0x8(%rsp)             \n\t");
+  __asm__ __volatile__(
+      "mov     %%rsp,%%rdx                \n\t"
+      "call    lua_load                   \n\t"
+      "add     $0x18,%%rsp                \n\t"
+      ::"S"(getS));
+}
 
 LUALIB_API int (luaL_loadstring) (lua_State *L, const char *s) {
   return luaL_loadbuffer(L, s, strlen(s), s);

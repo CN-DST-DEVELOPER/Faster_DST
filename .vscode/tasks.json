@@ -1,0 +1,145 @@
+{
+    "tasks": [
+        {
+            "type": "process",
+            "label": "调试编译动态链接库",
+            "command": "make",
+            "args": [
+                "libpreload",
+                "CFLAGS=-g -fPIC -shared -DDEBUG_DIR=\\\"${workspaceFolder}/build/\\\""
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "dependsOn": [
+                "调试编译LuaJIT",
+                "调试编译Lua51"
+            ]
+        },
+        {
+            "type": "process",
+            "label": "单独调试编译",
+            "command": "make",
+            "args": [
+                "single",
+                "CFLAGS=-g -DSINGLE_DEBUG -DDEBUG_DIR=\\\"${workspaceFolder}/build/\\\""
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "dependsOn": [
+                "调试编译LuaJIT",
+                "调试编译Lua51"
+            ]
+        },
+        {
+            "type": "process",
+            "label": "调试编译LuaJIT",
+            "command": "make",
+            "args": [
+                "luajit",
+                "LDFLAGS=-g"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "type": "process",
+            "label": "调试编译Lua51",
+            "command": "make",
+            "args": [
+                "lua51"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "type": "process",
+            "label": "编译发布版preload",
+            "command": "make",
+            "args": [
+                "libpreload",
+                "CFLAGS=-fPIC -shared -O2",
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "process",
+            "label": "编译发布版LuaJIT",
+            "command": "make",
+            "args": [
+                "luajit",
+                "CFLAGS=-O2"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "process",
+            "label": "编译发布版Lua51",
+            "command": "make",
+            "args": [
+                "lua51"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build"
+        },
+        {
+            "type": "process",
+            "label": "安装链接库",
+            "command": "make",
+            "args": [
+                "install"
+            ],
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "dependsOn": [
+                "编译发布版LuaJIT",
+                "编译发布版Lua51",
+                "编译发布版preload"
+            ]
+        },
+        {
+            "type": "process",
+            "label": "清理编译文件",
+            "command": "make",
+            "args": [
+                "clean"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "启动",
+            "type": "shell",
+            "command": "${env:DST_PATH}/dontstarve_dedicated_server_nullrenderer_x64",
+            "presentation": {
+                "focus": true
+            },
+            "options": {
+                "cwd": "${env:DST_PATH}",
+                "env": {
+                    "LD_PRELOAD": "${env:DST_PATH}/libpreload.so"
+                }
+            },
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "清理编译文件",
+                "安装链接库"
+            ],
+            "problemMatcher": []
+        },
+    ],
+    "version": "2.0.0"
+}

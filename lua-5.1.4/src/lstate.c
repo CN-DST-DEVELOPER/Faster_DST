@@ -81,7 +81,7 @@ static void f_luaopen (lua_State *L, void *ud) {
 }
 
 
-static void preinit_state (lua_State *L, global_State *g) {
+__forceinline void preinit_state (lua_State *L, global_State *g) {
   G(L) = g;
   L->stack = NULL;
   L->stacksize = 0;

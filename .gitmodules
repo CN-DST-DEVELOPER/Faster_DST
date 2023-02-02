@@ -1,3 +1,6 @@
 [submodule "LuaJIT"]
 	path = LuaJIT
 	url = https://github.com/zxcvbnm3057/LuaJIT.git
+[submodule "patch/FunctionLocater"]
+	path = patch/FunctionLocater
+	url = https://github.com/zxcvbnm3057/FunctionLocater.git

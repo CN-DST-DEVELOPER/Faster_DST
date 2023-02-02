@@ -77,7 +77,16 @@
 #define luaC_white(g)	cast(lu_byte, (g)->currentwhite & WHITEBITS)
 
 
-#define luaC_checkGC(L) { \
+
+/*
+#define luaC_checkGC(L) { \ 
+  condhardstacktests(luaD_reallocstack(L, L->stacksize - EXTRA_STACK - 1)); \
+  if (G(L)->totalbytes >= G(L)->GCthreshold) \
+	luaC_step(L); }*/
+	
+#define luaC_checkGC(L) ((void)L)
+
+#define luaC_checkGC_(L) { \
   condhardstacktests(luaD_reallocstack(L, L->stacksize - EXTRA_STACK - 1)); \
   if (G(L)->totalbytes >= G(L)->GCthreshold) \
 	luaC_step(L); }

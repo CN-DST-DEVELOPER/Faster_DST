@@ -67,14 +67,16 @@ sh ./setup.sh [dst_install_path] uninstall
 
 ## For Developers
 
+**All technical details has been published in [TechnicalDetails.md](https://github.com/zxcvbnm3057/Faster_DST/blob/main/TechnicalDetails.md) (Chinese Only).**
+
 ### Compilation Yourself
 
 Attention:
 
-- This project needs to be compiled with gcc-4.8.4, which you is the default compiler of Ubuntu 14.04 LTS. So you can import the apt source of Ubuntu 14.04 LTS and run `apt install gcc-4.8.4`.
-- Due to the use of git submodule to import some of dependencies, you need run `git submodule update --init --recursive` to pull all submodule after clone this repository.
-- Compile and debug require the environment variable `export DST_PATH=[dst_install_path]/bin64`
-- This was developed with VSCode. If you are using another dev-environment, please refer to the configuration file at `./.vscode/launch.json`
+- This project needs to be compiled with gcc-4.8.4, which you is the default compiler of Ubuntu 14.04 LTS. So you can import the apt source of Ubuntu 14.04 LTS and run`apt install gcc-4.8.4`.
+- Due to the use of git submodule to import some of dependencies, you need run`git submodule update --init --recursive` to pull all submodule after clone this repository.
+- Compile and debug require the environment variable`export DST_PATH=[dst_install_path]/bin64`
+- This was developed with VSCode. If you are using another dev-environment, please refer to the configuration file at`./.vscode/launch.json`
 
 After clone the whole repository and all of the submodules, you can start complie by executing this command in project root folder:
 
